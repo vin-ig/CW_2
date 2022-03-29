@@ -1,6 +1,3 @@
-# Windows-1251
-# utf-8
-
 import json
 import logging
 
@@ -55,14 +52,3 @@ def get_comments_count(comments: list) -> dict:
 		count[uid] = len(get_comments_by_post(comments, uid))
 	
 	return count
-
-
-# comments = load_json('data/comments.json')
-#
-# print(get_comments_count(comments))
-# input()
-
-
-
-
-

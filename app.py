@@ -1,4 +1,4 @@
-from flask import Flask, render_template, send_from_directory
+from flask import Flask, render_template, send_from_directory, request
 from utils import *
 
 POSTS = 'data/data.json'
@@ -20,6 +20,16 @@ def index():
 	comments_count = get_comments_count(comments)
 
 	return render_template('index.html', posts=posts, comments_count=comments_count, bookmarks_count=len(bookmarks))
+
+
+@app.route('/search')
+def search():
+	posts = load_json(POSTS)
+	s = request.args.get('s')
+	found_posts = search_for_post(posts, s)
+	return render_template('search.html', s=s, found_posts=found_posts)
+
+
 
 
 # @app.route("/uploads/<path:path>")

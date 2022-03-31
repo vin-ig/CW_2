@@ -519,5 +519,10 @@ textarea {
 	opacity: 0.75
 }
 
+.error_mesage {
+	text-align: center;
+	font-weight: bold;
+	color: rgba(0, 0, 0, 0.5);
+}
 
 /*# sourceMappingURL=styles.min.css.map */

@@ -36,7 +36,7 @@ post_by_pk = [
 
 @pytest.mark.parametrize('first, second, expected', post_by_user)
 def test_user_post(first, second, expected):
-    assert get_post_by_user(first, second) == expected, 'Errrrrr'
+    assert get_posts_by_user(first, second) == expected, 'Errrrrr'
 
 
 @pytest.mark.parametrize('first, second, expected', comments_by_post)

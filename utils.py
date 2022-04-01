@@ -97,8 +97,8 @@ def create_tags(post: dict, tags: list) -> dict:
 		post['content'] = post.get('content').replace(text, link)
 
 
-def write_json(path, update):
-	with open(path) as file:
+def write_json(path: str, update: dict):
+	with open(path, encoding='utf-8') as file:
 		data = json.load(file)
 	
 	if update not in data:
@@ -108,7 +108,7 @@ def write_json(path, update):
 			if elem == update:
 				data.remove(elem)
 
-	with open(path, 'w') as file:
+	with open(path, 'w', encoding='utf-8') as file:
 		json.dump(data, file, indent=2, ensure_ascii=False)
 
 

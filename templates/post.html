@@ -46,7 +46,7 @@
         </div>
         <div class="item__bottom">
           <div class="item__post-info">
-            <p class="item__comments-counter">{{comments_count.pk}}</p>
+            <p class="item__comments-counter">{{comments_count.get(post.post_id, 'Нет комментариев')}}</p>
             <div class="item__counter">
               <img src="../static/img/eye.png" alt="" class="item__counter-icon" width="26">
               <span class="item__counter-text">{{post.views_count}}</span>

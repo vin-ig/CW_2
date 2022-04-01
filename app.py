@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect
 from utils import *
 
 POSTS = 'data/data.json'
@@ -21,7 +21,7 @@ def index():
 	tags = get_tags_by_posts(posts)
 
 	return render_template('index.html', posts=posts, comments_count=comments_count,
-							bookmarks_count=len(bookmarks), tags=tags)
+							bookmarks=bookmarks, tags=tags)
 
 
 @app.route('/post/<int:uid>')
@@ -77,6 +77,14 @@ def hashtag(tag):
 def bookmarks():
 	bookmarks = load_json(BOOKMARKS)
 	return render_template('bookmarks.html', posts=bookmarks)
+
+
+@app.route('/bookmark', methods=['POST'])
+def bookmark():
+	bm = request.form.get('bm')
+	bm = json.loads(bm.replace("'", '"'))
+	write_json(BOOKMARKS, bm)
+	return redirect('/', code=302)
 
 
 if __name__ == '__main__':

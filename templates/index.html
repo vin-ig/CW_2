@@ -34,6 +34,7 @@
   <main class="container">
     <section class="items">
 
+<!--        Пост-->
 	{% for post in posts %}
 	  <div class="items__item item">
         <div class="item__top">
@@ -65,19 +66,19 @@
         </div>
         <div class="item__post-bottom">
           <a href="/post/{{post.post_id}}" class="item__btn-more">Подробнее</a>
-<!--		  <iframe name="default" style="display: none;"></iframe>-->
 
           {% if post in bookmarks %}
             {% set bm_button = "active" %}
           {% endif %}
-		  <form action="/bookmark" target="default" method="POST">
-              <button id="bm" onclick="change_css()" type="submit" class="item__bookmark-btn {{bm_button}}" name="bm" value="{{post}}">
+		  <form action="/bookmark" target="default">
+              <button type="submit" class="item__bookmark-btn {{bm_button}}" name="bm" value="/&{{post.post_id}}">
 				<img src="../static/img/bookmark.png" alt="" class="item__bookmark-icon" width="24">
 			  </button>
 		  </form>
         </div>
       </div>
 	{% endfor %}
+<!--        Конец поста-->
 
 	</section>
   </main>

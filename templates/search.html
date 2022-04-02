@@ -34,12 +34,13 @@
         {% else %}
           {% set str = s[:30] + "..." %}
         {% endif %}
-        <main class="search__results">По запросу "{{str}}" найдено постов: 11</main>
+        <main class="search__results">По запросу "{{str}}" найдено постов: {{posts | length}}</main>
       {% endif %}
     </div>
     <section class="items">
 
-	{% for post in found_posts %}
+<!--        Пост-->
+	{% for post in posts %}
 	  <div class="items__item item">
         <div class="item__top">
           <a href="/user/{{post.poster_name}}" class="item__head">
@@ -53,7 +54,7 @@
           <img src="{{post.pic}}" alt="" width="348" class="item__post-img">
         </a>
         <p class="item__descr">
-		
+
 		{% for tag in tags[post.post_id] %}
 		  <a href="/tag/{{tag}}" class="item__tag">#{{tag}}</a>
 		{% endfor %}
@@ -70,12 +71,19 @@
         </div>
         <div class="item__post-bottom">
           <a href="/post/{{post.post_id}}" class="item__btn-more">Подробнее</a>
-          <button formaction="/bookmark" type="button" class="item__bookmark-btn">
-            <img src="../static/img/bookmark.png" alt="" class="item__bookmark-icon" width="24">
-          </button>
+
+          {% if post in bookmarks %}
+            {% set bm_button = "active" %}
+          {% endif %}
+          <form action="/bookmark" target="default">
+              <button type="submit" class="item__bookmark-btn {{bm_button}}" name="bm" value="/search?s={{s}}&{{post.post_id}}">
+				<img src="../static/img/bookmark.png" alt="" class="item__bookmark-icon" width="24">
+			  </button>
+		  </form>
         </div>
       </div>
 	{% endfor %}
+<!--        Конец поста-->
 
     </section>
   </main>

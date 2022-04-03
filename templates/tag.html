@@ -24,7 +24,7 @@
   <main class="container">
     <section class="items">
 
-<!--        Пост-->
+<!--        Пост        -->
 	{% for post in posts %}
 	  <div class="items__item item">
         <div class="item__top">
@@ -60,7 +60,7 @@
           {% if post in bookmarks %}
             {% set bm_button = "active" %}
           {% endif %}
-		  <form action="/bookmark" target="default">
+		  <form action="/bookmark">
               <button type="submit" class="item__bookmark-btn {{bm_button}}" name="bm" value="/tag/{{tag}}&{{post.post_id}}">
 				<img src="../static/img/bookmark.png" alt="" class="item__bookmark-icon" width="24">
 			  </button>
@@ -68,7 +68,7 @@
         </div>
       </div>
 	{% endfor %}
-<!--        Конец поста-->
+<!--        Конец поста        -->
 
     </section>
   </main>

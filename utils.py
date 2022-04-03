@@ -1,6 +1,3 @@
-# Исправить тайп-хинты
-# Windows-1251
-# utf-8
 import json
 import logging
 
@@ -8,7 +5,7 @@ import logging
 logging.basicConfig(level=logging.ERROR)
 
 
-def load_json(path: str) -> list:
+def load_json(path: str) -> list | None:
 	"""Загружает данные из json-файла"""
 	try:
 		with open(path, encoding='utf-8') as file:
@@ -39,7 +36,7 @@ def search_for_post(data: list, query: str) -> list:
 		return []
 
 
-def get_post_by_id(data: list, uid: int) -> dict:
+def get_post_by_id(data: list, uid: int) -> dict | None:
 	"""Возвращает пост по идентификатору"""
 	for elem in data:
 		if elem['post_id'] == uid:
@@ -48,17 +45,19 @@ def get_post_by_id(data: list, uid: int) -> dict:
 
 
 def get_comments_count(comments: list) -> dict:
+	"""Возвращает количество комментариев к посту"""
 	count = {}
 	uids = set()
 	for comment in comments:
 		uids.add(comment.get('post_id'))
 	for uid in list(uids):
 		num = len(get_comments_by_post(comments, uid))
-		count[uid] = f'{num} комментари{ending(num)}'
+		count[uid] = f'{num} комментари{ending(num)}'  # Подбираем правильное окончание
 	return count
 
 
-def ending(k):
+def ending(k: int) -> str:
+	"""Возвращает правильное окончание слова"""
 	if 11 <= k % 100 <= 20:
 		end = 'ев'
 	elif k % 10 == 1:
@@ -71,10 +70,11 @@ def ending(k):
 
 
 def get_tags_by_text(text: str) -> list:
-	punktuation = (',', '.', '?', '!', '@', '', '*', '/', '-', '–')
-	for elem in punktuation:
-		text = text.replace(elem, '')
-		text = text.replace('  ', ' ')
+	"""Возвращает список хэштегов в тексте"""
+	punctuation = (',', '.', '?', '!', '@', '', '*', '/', '-', '–')
+	for elem in punctuation:
+		text = text.replace(elem, '')  # Удаляем все знаки препинания
+		text = text.replace('  ', ' ')  # Удаляем двойные пробелы
 	tags = []
 	for word in text.split(' '):
 		if word[0] == '#':
@@ -83,6 +83,7 @@ def get_tags_by_text(text: str) -> list:
 
 
 def get_tags_by_posts(data: list) -> dict:
+	"""Возвращает список хэштегов, относящихся к соответствующему посту"""
 	tags = {}
 	for elem in data:
 		tags_by_text = get_tags_by_text(elem.get('content'))
@@ -90,7 +91,8 @@ def get_tags_by_posts(data: list) -> dict:
 	return tags
 
 
-def create_tags(post: dict, tags: list) -> dict:
+def create_tags(post: dict, tags: list):
+	"""Превращает текстовые хэштеги в активные ссылки"""
 	for tag in tags:
 		text = f'#{tag}'
 		link = f'<a href="/tag/{tag}">#{tag}</a>'
@@ -98,9 +100,11 @@ def create_tags(post: dict, tags: list) -> dict:
 
 
 def write_json(path: str, update: dict):
+	"""Обновляет json-файл"""
 	with open(path, encoding='utf-8') as file:
 		data = json.load(file)
-	
+
+	# Если данных нет в списке, то добавляем их, если есть - удаляем
 	if update not in data:
 		data.append(update)
 	else:
@@ -110,23 +114,3 @@ def write_json(path: str, update: dict):
 
 	with open(path, 'w', encoding='utf-8') as file:
 		json.dump(data, file, indent=2, ensure_ascii=False)
-
-
-
-
-
-
-# bm = 'd:/temp/coursework 2/3_cw_2/data/bookmarks.json'
-# data = load_json('d:/temp/coursework 2/3_cw_2/data/data.json')
-# # tags = get_tags_by_text(post.get('content'))
-
-# for i in range(0, len(data), 3):
-	# post = data[i]
-	# write_json(bm, post)
-
-
-# posts = load_json('data/data.json')
-# post = posts[0]
-# tags = get_tags_by_posts(posts)
-# print(tags)
-# input()

@@ -1,15 +1,18 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, jsonify
 from utils import *
 
-POSTS = 'data/data.json'
-COMMENTS = 'data/comments.json'
-BOOKMARKS = 'data/bookmarks.json'
-
 app = Flask(__name__)
+app.config.from_pyfile('config.py')
+app.config['JSON_AS_ASCII'] = False
+
+POSTS = app.config.get('POSTS')
+COMMENTS = app.config.get('COMMENTS')
+BOOKMARKS = app.config.get('BOOKMARKS')
 
 
 @app.route('/')
 def index():
+	"""Главная страница"""
 	posts = load_json(POSTS)
 	comments = load_json(COMMENTS)
 	bookmarks = load_json(BOOKMARKS)
@@ -31,11 +34,6 @@ def post(uid):
 	bookmarks = load_json(BOOKMARKS)
 	post = get_post_by_id(posts, uid)
 	bookmark = post in bookmarks
-
-	# write_json(POSTS, post)
-	# post['views_count'] += 1
-	# write_json(POSTS, post)
-
 	comments_by_post = get_comments_by_post(comments, uid)
 	tags = get_tags_by_text(post.get('content'))
 	comments_count = get_comments_count(comments)
@@ -111,5 +109,18 @@ def bookmark():
 	return redirect(page, code=302)
 
 
+@app.route('/api/posts')
+def api_posts():
+	posts = load_json(POSTS)
+	return jsonify(posts)
+
+
+@app.route('/api/post/<int:uid>')
+def api_post(uid):
+	posts = load_json(POSTS)
+	post = get_post_by_id(posts, uid)
+	return jsonify(post)
+
+
 if __name__ == '__main__':
-	app.run(debug=True)
+	app.run(debug=app.config.get('DEBUG'))

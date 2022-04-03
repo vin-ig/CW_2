@@ -1,7 +1,7 @@
 venv
 __pycache__
-tests/__pycache__
 .idea
 .DS_Store
 test/.pytest_cache
 .pytest_cache
+*/__pycache__

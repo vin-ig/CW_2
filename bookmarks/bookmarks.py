@@ -11,6 +11,8 @@ def all_bookmarks():
 	posts = load_json(POSTS)
 	comments = load_json(COMMENTS)
 	bookmarks = load_json(BOOKMARKS)
+	if posts == 'ERROR' or comments == 'ERROR' or bookmarks == 'ERROR':
+		return render_template('error.html', message='Ошибка загрузки данных')
 
 	comments_count = get_comments_count(comments)
 	tags = get_tags_by_posts(posts)
@@ -23,6 +25,9 @@ def all_bookmarks():
 def bookmark():
 	"""Добавление/удаление закладок"""
 	posts = load_json(POSTS)
+	if posts == 'ERROR':
+		return render_template('error.html', message='Ошибка загрузки данных')
+
 	bm = request.args.get('bm')  # Обрабатываем запрос при нажатии на кнопку закладки
 	pos = bm.rfind('&')  # Разделяем два значения по разделителю &
 	page, uid = bm[:pos], int(bm[pos + 1:])  # Страница, куда будет выполнен редирект; ID поста

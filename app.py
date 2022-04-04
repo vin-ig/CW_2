@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, jsonify
+from flask import Flask, render_template, request
 from utils import *
 from api.api import api
 from bookmarks.bookmarks import bookmarks
@@ -11,7 +11,6 @@ app.register_blueprint(bookmarks)
 app.register_blueprint(api)
 
 app.config.from_pyfile('config.py')
-app.config['JSON_AS_ASCII'] = False
 
 POSTS = app.config.get('POSTS')
 COMMENTS = app.config.get('COMMENTS')
@@ -24,8 +23,7 @@ def index():
 	posts = load_json(POSTS)
 	comments = load_json(COMMENTS)
 	bookmarks = load_json(BOOKMARKS)
-
-	if not posts or not comments:
+	if posts == 'ERROR' or comments == 'ERROR' or bookmarks == 'ERROR':
 		return render_template('error.html', message='Ошибка загрузки данных')
 
 	comments_count = get_comments_count(comments)  # Количество комментариев
@@ -41,6 +39,8 @@ def post(uid):
 	posts = load_json(POSTS)
 	comments = load_json(COMMENTS)
 	bookmarks = load_json(BOOKMARKS)
+	if posts == 'ERROR' or comments == 'ERROR' or bookmarks == 'ERROR':
+		return render_template('error.html', message='Ошибка загрузки данных')
 
 	post = get_post_by_id(posts, uid)  # Находим пост по ID
 	if not post:
@@ -48,9 +48,9 @@ def post(uid):
 
 	bookmark = post in bookmarks  # Необходимо для корректного отображения иконки закладки
 	comments_by_post = get_comments_by_post(comments, uid)  # Загружаем комментарии к посту
-	tags = get_tags_by_text(post.get('content'))  # Ищем хэштеги в тексте поста
+	tags = get_tags_by_text(post.get('content'))  # Ищем хештеги в тексте поста
 	comments_count = get_comments_count(comments)  # Количество комментариев
-	create_tags(post, tags)  # Превращаем текстовые хэштеги в активные ссылки
+	create_tags(post, tags)  # Превращаем текстовые хештеги в активные ссылки
 	return render_template('post.html', post=post, comments_count=comments_count,
 							comments=comments_by_post, tags=tags, bookmark=bookmark)
 
@@ -61,6 +61,8 @@ def search():
 	posts = load_json(POSTS)
 	comments = load_json(COMMENTS)
 	bookmarks = load_json(BOOKMARKS)
+	if posts == 'ERROR' or comments == 'ERROR' or bookmarks == 'ERROR':
+		return render_template('error.html', message='Ошибка загрузки данных')
 
 	comments_count = get_comments_count(comments)
 	tags = get_tags_by_posts(posts)
@@ -76,6 +78,8 @@ def user(name):
 	posts = load_json(POSTS)
 	comments = load_json(COMMENTS)
 	bookmarks = load_json(BOOKMARKS)
+	if posts == 'ERROR' or comments == 'ERROR' or bookmarks == 'ERROR':
+		return render_template('error.html', message='Ошибка загрузки данных')
 
 	user_posts = get_posts_by_user(posts, name)
 	if not user_posts:
@@ -89,10 +93,12 @@ def user(name):
 
 @app.route('/tag/<tag>')
 def hashtag(tag):
-	"""Страница с постами по хэштегу"""
+	"""Страница с постами по хештегу"""
 	posts = load_json(POSTS)
 	comments = load_json(COMMENTS)
 	bookmarks = load_json(BOOKMARKS)
+	if posts == 'ERROR' or comments == 'ERROR' or bookmarks == 'ERROR':
+		return render_template('error.html', message='Ошибка загрузки данных')
 
 	tags = get_tags_by_posts(posts)
 	comments_count = get_comments_count(comments)
@@ -108,5 +114,10 @@ def hashtag(tag):
 							comments_count=comments_count, bookmarks=bookmarks)
 
 
+@app.errorhandler(404)
+def not_found_error(error):
+	return render_template('error.html', message='Упс! Такой странички у нас нет(('), 404
+
+
 if __name__ == '__main__':
-	app.run(debug=app.config.get('DEBUG'))
+	app.run()

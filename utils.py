@@ -5,17 +5,17 @@ import logging
 logging.basicConfig(level=logging.ERROR)
 
 
-def load_json(path: str) -> list | None:
+def load_json(path: str) -> list | str:
 	"""Загружает данные из json-файла"""
 	try:
 		with open(path, encoding='utf-8') as file:
 			return json.load(file)
 	except FileNotFoundError:
 		logging.error("Файл не найден")
-		return None
+		return 'ERROR'
 	except json.JSONDecodeError:
 		logging.error('Ошибка преобразования json-файла')
-		return None
+		return 'ERROR'
 
 
 def get_posts_by_user(data: list, text: str) -> list:
@@ -70,7 +70,7 @@ def ending(k: int) -> str:
 
 
 def get_tags_by_text(text: str) -> list:
-	"""Возвращает список хэштегов в тексте"""
+	"""Возвращает список хештегов в тексте"""
 	punctuation = (',', '.', '?', '!', '@', '', '*', '/', '-', '–')
 	for elem in punctuation:
 		text = text.replace(elem, '')  # Удаляем все знаки препинания
@@ -83,7 +83,7 @@ def get_tags_by_text(text: str) -> list:
 
 
 def get_tags_by_posts(data: list) -> dict:
-	"""Возвращает список хэштегов, относящихся к соответствующему посту"""
+	"""Возвращает список хештегов, относящихся к соответствующему посту"""
 	tags = {}
 	for elem in data:
 		tags_by_text = get_tags_by_text(elem.get('content'))
@@ -92,7 +92,7 @@ def get_tags_by_posts(data: list) -> dict:
 
 
 def create_tags(post: dict, tags: list):
-	"""Превращает текстовые хэштеги в активные ссылки"""
+	"""Превращает текстовые хештеги в активные ссылки"""
 	for tag in tags:
 		text = f'#{tag}'
 		link = f'<a href="/tag/{tag}">#{tag}</a>'

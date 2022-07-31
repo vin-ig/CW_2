@@ -14,11 +14,12 @@ jobs:
         run: docker push ivinokurov/hw_26:$GITHUB_REF_NAME-$GITHUB_RUN_ID
   deploy:
     runs-on: ubuntu-latest
+    needs: build_and_push
     steps:
       - name: clone code
         uses: actions/checkout@v2
       - name: render configs
-        run:|
+        run: |
           mkdir deploy
           cat docker-compose-ci.yaml | envsubst > deploy/docker-compose.yaml
       - name: copy files to server

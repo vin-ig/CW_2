@@ -1,0 +1,14 @@
+version: "3.9"
+
+services:
+  api:
+    build:
+      context: .
+    image: ivinokurov/hw_26
+    ports:
+      - 80:80
+#    volumes:
+#      - ./data/bookmarks.json:/code/data/bookmarks.json
+#      - ./data/comments.json:/code/data/comments.json
+#      - ./data/data.json:/code/data/data.json
+    restart: always
